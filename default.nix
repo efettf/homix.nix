@@ -4,8 +4,9 @@ inputs: {
   pkgs,
   ...
 }: let
-  inherit (lib) mkOption mkEnableOption types filterAttrs attrValues mkIf mkDerivedConfig;
-  inherit (builtins) map listToAttrs attrNames;
+  inherit (lib) mkOption mkDefault replaceStrings mkEnableOption types filterAttrs attrValues mkIf mkDerivedConfig;
+  inherit (builtins) map listToAttrs attrNames concatStringsSep;
+  inherit (pkgs) writeShellScript writeText;
 in {
   options = {
     homix = mkOption {
@@ -35,12 +36,12 @@ in {
           };
         };
         config = {
-          path = lib.mkDefault name;
+          path = mkDefault name;
           source = mkIf (config.text != null) (
             let
-              name' = "homix-" + lib.replaceStrings ["/"] ["-"] name;
+              name' = "homix-" + replaceStrings ["/"] ["-"] name;
             in
-              mkDerivedConfig options.text (pkgs.writeText name')
+              mkDerivedConfig options.text (writeText name')
           );
         };
       }));
@@ -63,9 +64,9 @@ in {
         ln -sf ${f.source} $FILE
       '') (attrValues config.homix);
     in
-      pkgs.writeShellScript "homix-link" ''
+      writeShellScript "homix-link" ''
         #!/bin/sh
-        ${builtins.concatStringsSep "\n" files}
+        ${concatStringsSep "\n" files}
       '';
 
     mkService = user: {
