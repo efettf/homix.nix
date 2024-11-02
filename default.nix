@@ -54,7 +54,7 @@ in {
   };
 
   config = let
-    # list of users managed by homix
+    # List of users managed by homix.
     users = attrNames (filterAttrs (name: user: user.homix) config.users.users);
 
     homix-link = let
@@ -80,7 +80,6 @@ in {
           ExecStart = "${homix-link}";
         };
         environment = {
-          # epic systemd momento
           HOME = config.users.users.${user}.home;
         };
       };
