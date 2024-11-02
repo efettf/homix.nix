@@ -5,7 +5,6 @@ inputs: {
   ...
 }: let
   inherit (lib) mkOption mkEnableOption types filterAttrs attrValues mkIf mkDerivedConfig;
-
   inherit (builtins) map listToAttrs attrNames;
 in {
   options = {
@@ -70,18 +69,16 @@ in {
       '';
 
     mkService = user: {
-      name = "homix-${user}";
+      name = "homix-" + user;
       value = {
         wantedBy = ["multi-user.target"];
         description = "Setup homix environment for ${user}.";
         serviceConfig = {
           Type = "oneshot";
-          User = "${user}";
-          ExecStart = "${homix-link}";
+          User = user;
+          ExecStart = homix-link;
         };
-        environment = {
-          HOME = config.users.users.${user}.home;
-        };
+        environment.HOME = config.users.users.${user}.home;
       };
     };
 
