@@ -60,7 +60,7 @@ in {
     homix-link = let
       files = map (f: ''
         FILE=$HOME/${f.path}
-        rm $FILE
+        [[ -d ${f.source} ]] && rm $FILE
         mkdir -p $(dirname $FILE)
         ln -sf ${f.source} $FILE
       '') (attrValues config.homix);
