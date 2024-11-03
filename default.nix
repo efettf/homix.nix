@@ -62,7 +62,7 @@ in {
         FILE=$HOME/${f.path}
         [[ -d ${f.source} ]] && rm $FILE
         mkdir -p $(dirname $FILE)
-        ln -sf ${f.source} $FILE
+        [ ! cmp -s $FILE ${f.source} ] && ln -sf ${f.source} $FILE
       '') (attrValues config.homix);
     in
       writeShellScript "homix-link" ''
