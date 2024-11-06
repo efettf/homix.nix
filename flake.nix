@@ -1,8 +1,7 @@
 {
   outputs = inputs: {
     nixosModules = rec {
-      simple-manager = import ./. inputs;
-      default = simple-manager;
+      default = import ./. inputs;
     };
   };
 
